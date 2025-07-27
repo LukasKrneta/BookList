@@ -1,12 +1,10 @@
 import express from "express";
 import pg from "pg";
-import path from "path";
 
 const app = express();
 const port = 3000;
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
 
 const db = new pg.Client({
     user: "postgres",
