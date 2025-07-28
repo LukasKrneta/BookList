@@ -26,22 +26,30 @@ app.get('/', (req, res) => {
   res.render('index.ejs');
 });
 
+function findFirstIsbn(docs) {
+  for (const doc of docs) {
+    if (doc.ia && Array.isArray(doc.ia)) {
+      for (const item of doc.ia) {
+        if (item.startsWith("isbn_")) {
+          return item; // return the ISBN string when found
+        }
+      }
+    }
+  }
+  return null; // no ISBN found
+}
+
 app.post('/new', async (req, res) => {
     const input = req.body;
     const result = await fetch(API_address + input.title);
     const data = await result.json();
-    const docs = data.docs;
-    let isbn = null;
-    data.docs.forEach(doc => {
-      if (doc.ia) {
-        doc.ia.forEach(item => {
-          if (item.startsWith("isbn_")) {
-            isbn = item.replace('isbn_', '');
-          }
-        });
-      }
-    });
+
+    const match = findFirstIsbn(data.docs);
+    
+    // console.log(match);
+    let isbn = match.replace('isbn_', '');
     const cover = API_address_covers + isbn + '.jpg';
+    // console.log(cover);
 
     res.render('index', {
       title: input.title,
