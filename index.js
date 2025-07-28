@@ -17,13 +17,17 @@ const db = new pg.Client({
 
 db.connect();
 
+// popravi date format u db i mozda mora provjerit locals?
+// napravi error handling i te pm
+
 const API_address = "https://openlibrary.org/search.json?q="
 const API_address_covers = "https://covers.openlibrary.org/b/isbn/"
 
-// covers ne radi
-
-app.get('/', (req, res) => {
-  res.render('index.ejs');
+app.get('/', async (req, res) => {
+  const selectQuery = await db.query('SELECT * FROM books');
+  res.render('index.ejs', {
+    pastList: selectQuery.rows
+  });
 });
 
 function findFirstIsbn(docs) {
@@ -46,18 +50,13 @@ app.post('/new', async (req, res) => {
 
     const match = findFirstIsbn(data.docs);
     
-    // console.log(match);
     let isbn = match.replace('isbn_', '');
     const cover = API_address_covers + isbn + '.jpg';
-    // console.log(cover);
 
-    res.render('index', {
-      title: input.title,
-      author: data.docs[0].author_name[0],
-      notes: input.notes,
-      date: input.date,
-      cover: cover
-    });
+    await db.query('INSERT INTO books(title, notes, rating, author, date_read) VALUES ($1, $2, $3, $4, $5)', 
+      [input.title, input.notes, input.rating, data.docs[0].author_name[0], input.date]);
+
+    res.redirect('/');
 });
 
 app.listen(port, () => {

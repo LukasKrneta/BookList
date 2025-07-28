@@ -11,17 +11,29 @@
         <input type="text" name="title" placeholder="Title">
         <textarea name="notes" placeholder="Notes"></textarea>
         <input type="date" name="date" placeholder="Date when finished reading">
+        <label for="rating">Rating:</label>
+        <select name="rating">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
         <input type="submit">
     </form>
     
-    <% if(locals.title && locals.author && locals.notes && locals.date && locals.cover){ %>
-    <h1><%= title %></h1>
-    <h2><%= author %></h2>
-    <p><%= notes %></p>
-    <p><b><%= date %></b></p>
-    <img src="<%= cover %>" alt="image">
-
-    <% } %>
+<ul>
+  <% pastList.forEach(book => { %>
+    <li>
+      <h1><%= book.title %></h1>
+      <h2><%= book.author %></h2>
+      <p><%= book.notes %></p>
+      <p><b><%= book.rating %></b></p>
+      <p><b><%= book.date_read %></b></p>
+      <img src="<%= book.cover %>" alt="cover image">
+    </li>
+  <% }) %>
+</ul>
 
 </body>
 </html>
