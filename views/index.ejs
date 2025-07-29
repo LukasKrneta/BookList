@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BookList</title>
+    <style>
+      img {
+        max-width: 200px;
+        height: auto;
+        display: block;
+        margin-top: 10px;
+      }
+
+      @media (max-width: 600px) {
+        img {
+          max-width: 100%;
+        }
+      }
+  </style>
 </head>
 <body>
     
@@ -36,7 +50,7 @@
     <li>
       <h1><%= book.title %></h1>
       <form action="/edit/<%= book.id %>" method="get">
-        <button type="submit">Edit</button>
+        <button type="submit" style="display: inline">Edit</button>
       </form>
       <form action="/delete/<%= book.id %>" method="get">
         <button type="submit">Delete</button>
