@@ -10,7 +10,7 @@
     <form action="/new" method="POST">
         <input type="text" name="title" placeholder="Title">
         <textarea name="notes" placeholder="Notes"></textarea>
-        <input type="date" name="date" placeholder="Date when finished reading">
+        <input type="date" name="date">
         <label for="rating">Rating:</label>
         <select name="rating">
             <option value="1">1</option>
@@ -21,11 +21,26 @@
         </select>
         <input type="submit">
     </form>
+
+    <form action="/sort" method="post">
+      <label for="sort">Sort by:</label>
+          <select name="sort">
+            <option value="rating">Rating</option>
+            <option value="date_read">Date</option>
+          </select>
+          <input type="submit">
+      </form>
     
 <ul>
   <% pastList.forEach(book => { %>
     <li>
       <h1><%= book.title %></h1>
+      <form action="/edit/<%= book.id %>" method="get">
+        <button type="submit">Edit</button>
+      </form>
+      <form action="/delete/<%= book.id %>" method="get">
+        <button type="submit">Delete</button>
+      </form>
       <h2><%= book.author %></h2>
       <p><%= book.notes %></p>
       <p><b><%= book.rating %></b></p>

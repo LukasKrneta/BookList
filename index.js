@@ -30,6 +30,14 @@ app.get('/', async (req, res) => {
   });
 });
 
+app.post('/sort', async (req, res) => {
+  const sortColumn = req.body.sort;
+  const sortQuery = await db.query(`SELECT * FROM books ORDER BY ${sortColumn}`);
+  res.render('index.ejs', {
+    pastList: sortQuery.rows
+  });
+});
+
 function findFirstIsbn(docs) {
   for (const doc of docs) {
     if (doc.ia && Array.isArray(doc.ia)) {
@@ -53,10 +61,27 @@ app.post('/new', async (req, res) => {
     let isbn = match.replace('isbn_', '');
     const cover = API_address_covers + isbn + '.jpg';
 
-    await db.query('INSERT INTO books(title, notes, rating, author, date_read) VALUES ($1, $2, $3, $4, $5)', 
-      [input.title, input.notes, input.rating, data.docs[0].author_name[0], input.date]);
+    await db.query('INSERT INTO books(title, notes, rating, author, date_read, cover) VALUES ($1, $2, $3, $4, $5, $6)', 
+      [input.title, input.notes, input.rating, data.docs[0].author_name[0], input.date, cover]);
 
     res.redirect('/');
+});
+
+app.get('/edit/:id', async (req, res) => {
+  const item = req.params.id;
+  const selectQuery = await db.query('SELECT * FROM books WHERE id = $1', 
+    [item]);
+
+  res.render('edit.ejs', {
+    list: selectQuery.rows[0]
+  });
+});
+
+app.post('/edit/:id', async (req, res) => {
+  const input = req.body;
+  await db.query('UPDATE books SET notes = $1, rating = $2, date_read = $3 WHERE id = $4', [input.notes, input.rating, input.date_read, req.params.id]);
+
+  res.redirect('/');
 });
 
 app.listen(port, () => {

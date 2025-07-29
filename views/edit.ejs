@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit</title>
+</head>
+<body>
+    <h1><%= list.title %></h1>
+    <form action="/edit/<%= list.id %>" method="POST">
+        <textarea name="notes"><%= list.notes %></textarea>
+        <label for="rating">Rating:</label>
+        <select name="rating">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>   
+        </select>
+        <input type="date" name="date" value="<%= list.date_read %>">
+        <input type="submit">
+    </form>
+</body>
+</html>
